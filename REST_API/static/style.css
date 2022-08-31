@@ -1,21 +1,24 @@
 body {
     text-align: center;
-    background-color: #16213E;
+    background-color: #F5EDDC;
 }
 
 h1 {
     margin: 30px;
-    color: #E94560;
+    color: #EB1D36;
 }
 
 .flex-container {
     display: flex;
+    align-items: center;
 }
 
 .flex-child {
     flex: 1;
     padding: 20px;
     margin: 20px;
-    border: #533483 solid 2px;
-    color: #E94560;
+    border: #FA9494 solid 4px;
+    border-radius: 10px;
+    background-color: #CFD2CF;
+    color: #EB1D36;
 }

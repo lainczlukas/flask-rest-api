@@ -16,12 +16,18 @@
       <input style="margin-bottom: 10px;" type="text" name="title" id="title_input"><br>
       <label for="body">Article body:</label><br>
       <input style="margin-bottom: 10px;" type="text" name="body" id="body_input"><br>
-      <input type="button" value="Submit" onclick=send_request();>
+      <input type="button" value="Post Article" onclick=post_article();>
+      <input type="button" value="Update Article" onclick=update_article();>
     </form> 
   </div>
   
   <div class="flex-child table">
-
+    <form method="post">
+      <label for="id">Article ID:</label><br>
+      <input style="margin-bottom: 10px;" type="text" name="id" id="id_input"><br>
+      <input type="button" value="Get Article" onclick=get_article();>
+      <input type="button" value="Delete Article" onclick=delete_article();>
+    </form>
   </div>
 </div>
 <hr>
@@ -29,7 +35,37 @@
 
 {% block script %}
 <Script>
-function send_request(){
+
+function get_article(){
+  id = document.getElementById("id_input").value;
+
+  if(isNaN(id)){
+    console.log("invalid id")
+    return;
+  }
+
+  fetch(`${window.origin}/form/${id}`, {
+      method: "GET",
+      credentials: "include",
+      cache:"no-cache",
+      headers: new Headers({
+        'content-type': 'application/json'
+      })
+    })
+    .then(function(response){
+
+      if (response.status !== 200){
+        console.log(`Response status: ${response.status}`);
+        return;
+      }
+
+      response.json().then(function(data){
+        console.log(data);
+      })
+    })
+}
+
+function post_article(){
     title = document.getElementById("title_input").value;
     body = document.getElementById("body_input").value;
 
