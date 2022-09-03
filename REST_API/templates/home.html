@@ -10,7 +10,7 @@
 <h1>Welcome to Flask-Rest-Api</h1>
 
 <div class="flex-container">
-  <div class="flex-child form">
+  <div class="flex-child">
     <form method="post">
       <label for="title">Article title:</label><br>
       <input style="margin-bottom: 10px;" type="text" name="title" id="title_input"><br>
@@ -21,79 +21,71 @@
     </form> 
   </div>
   
-  <div class="flex-child table">
+  <div class="flex-child">
+    <div>
     <form method="post">
       <label for="id">Article ID:</label><br>
       <input style="margin-bottom: 10px;" type="text" name="id" id="id_input"><br>
-      <input type="button" value="Get Article" onclick=get_article();>
       <input type="button" value="Delete Article" onclick=delete_article();>
     </form>
+    </div>
   </div>
 </div>
 <hr>
+
+<div id="articles" class="flex-container"></div>
 {% endblock %}
 
 {% block script %}
 <Script>
+  function post_article(){
+      title = document.getElementById("title_input").value;
+      body = document.getElementById("body_input").value;
 
-function get_article(){
-  id = document.getElementById("id_input").value;
+      data = {
+        "title": title,
+        "body": body
+      };
 
-  if(isNaN(id)){
-    console.log("invalid id")
-    return;
+      fetch(`${window.origin}/form`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+        cache:"no-cache",
+        headers: new Headers({
+          'content-type': 'application/json'
+        })
+      })
+      .then(function(response){
+        if (response.status !== 200){
+          console.log(`Response status: ${response.status}`);
+          return;
+        }
+        response.json().then(function(data){
+          display_data(data)
+        })
+      })
   }
 
-  fetch(`${window.origin}/form/${id}`, {
-      method: "GET",
-      credentials: "include",
-      cache:"no-cache",
-      headers: new Headers({
-        'content-type': 'application/json'
-      })
-    })
-    .then(function(response){
+  function display_data(data){
+    const div = document.getElementById('articles')
 
-      if (response.status !== 200){
-        console.log(`Response status: ${response.status}`);
-        return;
-      }
-
-      response.json().then(function(data){
-        console.log(data);
-      })
-    })
-}
-
-function post_article(){
-    title = document.getElementById("title_input").value;
-    body = document.getElementById("body_input").value;
-
-    data = {
-      "title": title,
-      "body": body
-    };
-
-    fetch(`${window.origin}/form`, {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(data),
-      cache:"no-cache",
-      headers: new Headers({
-        'content-type': 'application/json'
-      })
-    })
-    .then(function(response){
-
-      if (response.status !== 200){
-        console.log(`Response status: ${response.status}`);
-        return;
-      }
-
-      response.json().then(function(data){
-        console.log(data);
-      })
-    })
-}
+    for (i = 0; i < data.length; i++){
+      const node = document.createElement('div')
+      node.className = "flex-child"
+      
+      const id = document.createElement('p')
+      id.innerHTML = data[i]["id"]
+      const title = document.createElement('p')
+      title.innerHTML = data[i]["title"]
+      const body = document.createElement('p')
+      body.innerHTML = data[i]["body"]
+      
+      node.appendChild(id)
+      node.appendChild(title)
+      node.appendChild(body)
+      div.appendChild(node)
+    }
+  }
 </Script>
 {% endblock %}

@@ -6,4 +6,4 @@ class Article(db.Model):
     body = db.Column(db.String(150), nullable=False)
 
     def __repr__(self):
-        return f"Article title: {self.title}, body: {self.body}"
+        return f"Article has id:{self.id} title: {self.title}, body: {self.body}"

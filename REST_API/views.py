@@ -8,7 +8,7 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/form", methods=['POST'])
+@app.route("/form", methods=['POST', 'UPDATE', 'DELETE'])
 def form():
     if request.method == 'POST':
             req = request.get_json()
@@ -18,21 +18,16 @@ def form():
             article = Article(title=title, body=body)
             db.session.add(article)
             db.session.commit()
-
-            return make_response(jsonify({'message': get_articles()}), 200)
-
-
-@app.route("/form/<int:id>", methods=['GET'])
-def get_article(id):
-    return make_response(jsonify({'message': 'article id is {}'.format(id)}), 200)
+            get_articles()
+            return make_response(jsonify(get_articles()), 200)
 
 
 def get_articles():
-    articles = Article.query.all()
+    articles = Article.query.limit(5).all()
 
     data = []
 
     for article in articles:
-        data.append(Article(title=article.title, body=article.body))
+        data.append({'id': article.id, 'title': article.title, 'body': article.body})
 
     return data
