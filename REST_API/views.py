@@ -18,9 +18,30 @@ def form():
             article = Article(title=title, body=body)
             db.session.add(article)
             db.session.commit()
-            get_articles()
-            return make_response(jsonify(get_articles()), 200)
 
+            return make_response(jsonify(get_articles()), 200)
+    
+    elif request.method == 'DELETE':
+        id = request.get_json()['id']
+
+        article = Article.query.get(id)
+        if article is not None:
+            Article.query.filter_by(id=id).delete()
+            db.session.commit()
+
+        return make_response(jsonify(get_articles()), 200)
+
+    elif request.method == 'UPDATE':
+        req = request.get_json()
+
+        id = req['id']
+        title = req['title']
+        body = req['body']
+
+        db.session.query(Article).filter_by(id=id).update({'title': title, 'body': body})
+        db.session.commit()
+
+        return make_response(jsonify(get_articles()), 200)
 
 def get_articles():
     articles = Article.query.limit(5).all()
