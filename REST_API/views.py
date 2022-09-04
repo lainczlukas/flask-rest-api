@@ -8,8 +8,11 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/form", methods=['POST', 'UPDATE', 'DELETE'])
+@app.route("/form", methods=['GET', 'POST', 'UPDATE', 'DELETE'])
 def form():
+    if request.method == 'GET':
+        return make_response(jsonify(get_articles()), 200)
+        
     if request.method == 'POST':
             req = request.get_json()
 

@@ -38,6 +38,26 @@
 
 {% block script %}
 <Script>
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch(`${window.origin}/form`, {
+        method: "GET",
+        credentials: "include",
+        cache:"no-cache",
+        headers: new Headers({
+          'content-type': 'application/json'
+        })
+      })
+      .then(function(response){
+        if (response.status !== 200){
+          console.log(`Response status: ${response.status}`);
+          return;
+        }
+        response.json().then(function(data){
+          display_data(data)
+        })
+      })
+  });
+
   function post_article(){
       title = document.getElementById("title_input").value;
       body = document.getElementById("body_input").value;
